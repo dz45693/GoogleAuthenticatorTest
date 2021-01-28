@@ -1,0 +1,18 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    string key = "123456";
+    string issuer = "Google";
+    string user = "Gavin@gamil.com";
+
+    // 生成 SetupCode
+    var code = new GoogleAuthenticator().GenerateSetupCode(issuer, user, key, 5);
+}
+
+<div class="text-center">
+    <h1 class="display-4">GoogleAuthenticator</h1><br />
+    <p>Account:@code.Account</p><br/>
+    <p>Key:@code.ManualEntryKey</p><br />
+    <img  src="@code.QrCodeSetupImageUrl"/>
+</div>

@@ -1,0 +1,23 @@
+﻿@page
+@model GoogleAuthenticatorTest.Pages.tokenModel
+@{
+    ViewData["Title"] = "Home page";
+
+    string key = "LC42VPXL3VUMBCAN";
+    string token = HttpContext.Request.Query["token"];
+    string result = "token验证失败";
+    if (!string.IsNullOrEmpty(token)){
+        GoogleAuthenticator gat = new GoogleAuthenticator();
+        if (gat.ValidateTwoFactorPIN(key, token)) {
+            result = "token验证成功";
+        }
+    }
+
+}
+
+
+
+<div class="text-center">
+    <p>@result</p>
+
+</div>
