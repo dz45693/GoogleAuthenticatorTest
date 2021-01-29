@@ -145,3 +145,15 @@ func HmacSha1(key, data []byte) []byte {
 	mac.Write(data)
 	return mac.Sum(nil)
 }
+
+func (this *GAuth) GetOtpAuth(issuer, accountTitleNoSpaces, secret string) (string, error) {
+	secretbyte, err := base32.StdEncoding.DecodeString(secret)
+	if err != nil {
+		return "", err
+	}
+
+	secret = base32.StdEncoding.EncodeToString(secretbyte)
+	auth := fmt.Sprintf("otpauth://totp/%v:%v?secret=%v&issuer=%v", issuer, accountTitleNoSpaces, secret, issuer)
+
+	return auth, nil
+}
