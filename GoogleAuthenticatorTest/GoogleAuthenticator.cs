@@ -31,7 +31,8 @@ namespace GoogleAuthenticatorTest
         /// <returns>SetupCode object</returns>
         public SetupCode GenerateSetupCode(string issuer, string accountTitleNoSpaces, string accountSecretKey, int QRPixelsPerModule)
         {
-            byte[] key = Encoding.UTF8.GetBytes(accountSecretKey);
+            //byte[] key = Encoding.UTF8.GetBytes(accountSecretKey);
+            byte[] key = Base32Encoding.ToBytes(accountSecretKey);
             return GenerateSetupCode(issuer, accountTitleNoSpaces, key, QRPixelsPerModule);
         }
 
@@ -99,7 +100,8 @@ namespace GoogleAuthenticatorTest
 
         internal string GenerateHashedCode(string secret, long iterationNumber, int digits = 6)
         {
-            byte[] key = Encoding.UTF8.GetBytes(secret);
+            // byte[] key = Encoding.UTF8.GetBytes(secret);
+            byte[] key = Base32Encoding.ToBytes(secret);
             return GenerateHashedCode(key, iterationNumber, digits);
         }
 
