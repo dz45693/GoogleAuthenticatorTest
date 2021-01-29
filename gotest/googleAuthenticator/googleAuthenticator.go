@@ -1,15 +1,11 @@
-/*******************************************************
-	File Name: google.go
-	Author: An
-	Mail:lijian@cmcm.com
-	Created Time: 14/11/26 - 10:25:26
-	Modify Time: 14/11/26 - 10:25:26
- *******************************************************/
 package googleAuthenticator
 
 import (
+	"crypto/hmac"
+	"crypto/sha1"
 	"encoding/base32"
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"math"
 	"math/rand"
@@ -22,6 +18,32 @@ type GAuth struct {
 	codeLen float64
 	table   map[string]int
 }
+
+var (
+	ErrSecretLengthLss     = errors.New("secret length lss 6 error")
+	ErrSecretLength        = errors.New("secret length error")
+	ErrPaddingCharCount    = errors.New("padding char count error")
+	ErrPaddingCharLocation = errors.New("padding char Location error")
+	ErrParam               = errors.New("param error")
+)
+
+var (
+	Table = []string{
+		"A", "B", "C", "D", "E", "F", "G", "H", // 7
+		"I", "J", "K", "L", "M", "N", "O", "P", // 15
+		"Q", "R", "S", "T", "U", "V", "W", "X", // 23
+		"Y", "Z", "2", "3", "4", "5", "6", "7", // 31
+		"=", // padding char
+	}
+
+	allowedValues = map[int]string{
+		6: "======",
+		4: "====",
+		3: "===",
+		1: "=",
+		0: "",
+	}
+)
 
 func NewGAuth() *GAuth {
 	return &GAuth{
@@ -108,4 +130,18 @@ func (this *GAuth) GetCode(secret string, timeSlices ...int64) (string, error) {
 	modulo := int64(math.Pow(10, this.codeLen))
 	format := fmt.Sprintf("%%0%dd", int(this.codeLen))
 	return fmt.Sprintf(format, value%modulo), nil
+}
+
+func arrayFlip(oldArr []string) map[string]int {
+	newArr := make(map[string]int, len(oldArr))
+	for key, value := range oldArr {
+		newArr[value] = key
+	}
+	return newArr
+}
+
+func HmacSha1(key, data []byte) []byte {
+	mac := hmac.New(sha1.New, key)
+	mac.Write(data)
+	return mac.Sum(nil)
 }

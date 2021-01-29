@@ -42,8 +42,8 @@ func main() {
 	//secret := os.Args[1]
 	//secret := "IU7B5Q3VBL55Q645"
 	ga := googleAuthenticator.NewGAuth()
-	//code := getCode(ga, secret)
-	code := "027093"
+	code := getCode(ga, secret)
+	//code := "027093"
 	ret := verifyCode(ga, secret, code)
 	fmt.Println(ret)
 
